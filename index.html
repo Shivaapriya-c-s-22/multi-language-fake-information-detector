@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Multi Language Detector</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --bg: #0f172a; 
+            --card: #1e293b; 
+            --primary: #6366f1; /* Indigo */
+            --secondary: #ec4899; /* Pink */
+            --accent: #06b6d4; /* Cyan */
+            --text: #f8fafc; 
+            --text-sec: #94a3b8; 
+            --success: #10b981; 
+            --danger: #ef4444; 
+        }
+        
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            color: var(--text); 
+            margin: 0; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+            padding-bottom: 50px;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(99,102,241,0.1), transparent 40%),
+                        radial-gradient(circle, rgba(236,72,153,0.1), transparent 40%);
+            animation: moveBackground 30s linear infinite;
+            z-index: -1;
+        }
+        @keyframes moveBackground { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Navbar */
+        nav { 
+            background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(20px); 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding: 1rem 2rem; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+
+        /* Logo Styles */
+        .logo { 
+            font-weight: 800; 
+            font-size: 1.3rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            background: linear-gradient(to right, var(--primary), var(--secondary)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap; /* Prevents breaking in the middle of a word */
+        }
+
+        .nav-links a { color: var(--text-sec); text-decoration: none; margin-left: 20px; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* Responsive Fix for Long Logo */
+        @media (max-width: 900px) {
+            nav { flex-direction: column; gap: 15px; padding: 1.5rem; }
+            .nav-links { width: 100%; display: flex; justify-content: space-between; }
+            .nav-links a { margin: 0; }
+            .logo { font-size: 1.1rem; justify-content: center; }
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+
+        /* Stats Row */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 50px; }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+
+        .stat-card { 
+            background: rgba(30, 41, 59, 0.5); 
+            backdrop-filter: blur(10px);
+            padding: 20px; border-radius: 15px; 
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            transition: 0.4s;
+        }
+        .stat-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .stat-card h3 { margin: 0; font-size: 2.5rem; background: linear-gradient(to bottom, #fff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card p { margin: 5px 0 0; color: var(--text-sec); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; }
+
+        /* CENTERED WIDE INPUT SECTION */
+        .main-input-section {
+            max-width: 1000px; /* Wider */
+            margin: 0 auto 60px auto; /* Centered */
+            position: relative;
+        }
+
+        .card { 
+            background: rgba(30, 41, 59, 0.6); 
+            backdrop-filter: blur(16px);
+            padding: 30px; border-radius: 25px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        textarea { 
+            width: 100%; 
+            height: 180px; 
+            background: rgba(15, 23, 42, 0.8); 
+            border: 2px solid #334155; 
+            color: white; 
+            padding: 20px; 
+            border-radius: 15px; 
+            font-family: inherit; 
+            font-size: 1.1rem; 
+            resize: none; 
+            transition: 0.3s; 
+            box-sizing: border-box; 
+        }
+        textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 25px rgba(6, 182, 212, 0.3); }
+        
+        button.action-btn { 
+            width: 100%; padding: 18px; 
+            background: linear-gradient(90deg, var(--primary), var(--secondary)); 
+            color: white; border: none; border-radius: 12px; font-size: 1.2rem; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        button.action-btn:hover { transform: scale(1.01); box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4); }
+
+        /* Translation Box */
+        .latest-result-container {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--accent);
+            animation: slideIn 0.5s ease-out;
+        }
+        .translation-box {
+            background: rgba(6, 182, 212, 0.1); 
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            border-radius: 8px;
+            color: #cffafe;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        /* HISTORY FOOTER SECTION */
+        .history-footer-section {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 50px;
+            margin-top: 50px;
+        }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: var(--text-sec); font-weight: 600; border-bottom: 2px solid rgba(255,255,255,0.1); text-transform: uppercase; font-size: 0.75rem; }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #cbd5e1; vertical-align: top; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        
+        .badge { padding: 4px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; }
+        .badge.REAL { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .badge.FAKE { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <!-- UPDATED LOGO TEXT AND ICON -->
+        <div class="logo"><i class="fas fa-globe-americas"></i> Multi Language Fake News Detector</div>
+        
+        <div class="nav-links">
+            <span style="color: white; margin-right: 20px;">{{ current_user.username }}</span>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-power-off"></i> Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- 1. Stats Row -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{{ total_checks }}</h3>
+                <p>Total Checks</p>
+            </div>
+            <div class="stat-card">
+                <h3 style="color: var(--success);">{{ real_percent }}%</h3>
+                <p>Real News</p>
+            </div>
+            <div class="stat-card">
+                <h3 style="color: var(--danger);">{{ fake_percent }}%</h3>
+                <p>Fake News</p>
+            </div>
+            <div class="stat-card">
+                <h3 style="color: var(--accent);">{{ accuracy }}</h3>
+                <p>Accuracy</p>
+            </div>
+        </div>
+
+        <!-- 2. Centered & Wider Input Section -->
+        <div class="main-input-section">
+            <div class="card">
+                <h2 style="margin-top:0; display:flex; align-items:center; gap:10px;">
+                    <i class="fas fa-search" style="color: var(--secondary)"></i> Analyze Content
+                </h2>
+                <form action="{{ url_for('predict') }}" method="POST">
+                    <textarea name="news_text" placeholder="Paste your news text or article description here..." required></textarea>
+                    <button type="submit" class="action-btn"><i class="fas fa-bolt"></i> Analyze Now</button>
+                </form>
+
+                <!-- 3. Translated Text Box (Below Description) -->
+                {% if latest %}
+                <div class="latest-result-container">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <span style="font-size: 0.9rem; color: #94a3b8; text-transform: uppercase;">Latest Analysis</span>
+                        <span style="font-size: 1.2rem; font-weight: 800; color: {{ 'var(--success)' if latest.result == 'REAL' else 'var(--danger)' }};">
+                            {{ latest.result }}
+                        </span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #cbd5e1; margin-bottom:10px;">
+                        <strong>Confidence:</strong> {{ latest.confidence }}%
+                    </div>
+                    <div class="translation-box">
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; font-weight: bold;">
+                            <i class="fas fa-language"></i> Translated Text (English)
+                        </div>
+                        {{ latest.translated_text }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 4. History Footer Section -->
+        <div class="history-footer-section">
+            <h2 style="margin-bottom: 20px; font-weight: 300; color: var(--text-sec);">
+                <i class="fas fa-history" style="color: var(--primary)"></i> Analysis History
+            </h2>
+            <div class="card table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Result</th>
+                            <th>Original Text</th>
+                            <th style="width: 100px;">Confidence</th>
+                            <th style="width: 80px;">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in history %}
+                        <tr>
+                            <td><span class="badge {{ item.result }}">{{ item.result }}</span></td>
+                            <td>
+                                <div style="font-weight:600; font-size: 0.95rem;">{{ item.original_text[:80] }}...</div>
+                                <div style="font-size: 0.75rem; color: #64748b;">{{ item.date_created.strftime('%Y-%m-%d %H:%M') }}</div>
+                            </td>
+                            <td>{{ item.confidence }}%</td>
+                            <td>
+                                <i class="fas fa-eye" style="cursor: pointer; color: var(--primary);" onclick="toggleDetails({{ item.id }})"></i>
+                            </td>
+                        </tr>
+                        <tr id="details-{{ item.id }}" style="display: none; background: rgba(0,0,0,0.3);">
+                            <td colspan="4" style="padding: 15px; border-top: 1px dashed #334155;">
+                                <strong>Original:</strong> {{ item.original_text }}<br><br>
+                                <strong style="color: var(--accent);">Translated:</strong> {{ item.translated_text }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="4" style="text-align:center; padding: 40px; color: var(--text-sec);">No history available yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleDetails(id) {
+            var row = document.getElementById("details-" + id);
+            if (row.style.display === "none") {
+                row.style.display = "table-row";
+            } else {
+                row.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
